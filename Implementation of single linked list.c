@@ -1,83 +1,92 @@
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-// Define the node structure
-typedef struct Node {
-int data;
-struct Node* next;
-} Node;
-// Insert at the beginning
-void insertAtBeginning(Node** head, int value) {
-Node* newNode = (Node*)malloc(sizeof(Node));
-newNode-&gt;data = value;
-newNode-&gt;next = *head;
-*head = newNode;
+#include <stdio.h>
+#include <stdlib.h>
+// Define the structure for a node
+struct Node {
+    int data;
+    struct Node *next;
+};
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node *newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
 }
-// Insert at the end
-void insertAtEnd(Node** head, int value) {
-Node* newNode = (Node*)malloc(sizeof(Node));
-newNode-&gt;data = value;
-newNode-&gt;next = NULL;
-if (*head == NULL) {
-*head = newNode;
-return;
+// Insert a node at the end
+void insertAtEnd(struct Node **head, int data) {
+    struct Node *newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    struct Node *temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
 }
-Node* temp = *head;
-while (temp-&gt;next != NULL) {
-temp = temp-&gt;next;
+// Delete a node by value
+void deleteNode(struct Node **head, int key) {
+    if (*head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    struct Node *temp = *head;
+    struct Node *prev = NULL;
+    // If head node itself holds the key
+    if (temp != NULL && temp->data == key) {
+        *head = temp->next;
+        free(temp);
+        printf("Deleted node with value %d\n", key);
+        return;
+    }
+    // Search for the node to be deleted
+    while (temp != NULL && temp->data != key) {
+        prev = temp;
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        printf("Node with value %d not found.\n", key);
+        return;
+    }
+    prev->next = temp->next;
+    free(temp);
+    printf("Deleted node with value %d\n", key);
 }
-temp-&gt;next = newNode;
-}
-
 // Display the linked list
-void displayList(Node* head) {
-if (head == NULL) {
-printf(&quot;List is empty.\n&quot;);
-return;
+void displayList(struct Node *head) {
+    struct Node *temp = head;
+    if (temp == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    printf("Linked List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
 }
-Node* temp = head;
-printf(&quot;Linked list: &quot;);
-while (temp != NULL) {
-printf(&quot;%d -&gt; &quot;, temp-&gt;data);
-temp = temp-&gt;next;
-}
-printf(&quot;NULL\n&quot;);
-}
-// Delete node by value
-void deleteNode(Node** head, int value) {
-Node* temp = *head;
-Node* prev = NULL;
-// If head node itself holds the value
-if (temp != NULL &amp;&amp; temp-&gt;data == value) {
-*head = temp-&gt;next;
-free(temp);
-printf(&quot;Deleted %d from the list.\n&quot;, value);
-return;
-}
-// Search for the value
-while (temp != NULL &amp;&amp; temp-&gt;data != value) {
-prev = temp;
-temp = temp-&gt;next;
-}
-
-// If value not found
-if (temp == NULL) {
-printf(&quot;Value %d not found in the list.\n&quot;, value);
-return;
-}
-// Unlink the node and free memory
-prev-&gt;next = temp-&gt;next;
-free(temp);
-printf(&quot;Deleted %d from the list.\n&quot;, value);
-}
+// Main function
 int main() {
-Node* head = NULL;
-insertAtEnd(&amp;head, 10);
-insertAtBeginning(&amp;head, 5);
-insertAtEnd(&amp;head, 15);
-insertAtEnd(&amp;head, 20);
-displayList(head);
-deleteNode(&amp;head, 15);
-displayList(head);
-deleteNode(&amp;head, 100); // Try deleting a value not in list
-return 0;
+    struct Node *head = NULL;
+    int n, value, del;
+    // Insert nodes
+    printf("Enter number of nodes to insert: ");
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        printf("Enter value for node %d: ", i + 1);
+        scanf("%d", &value);
+        insertAtEnd(&head, value);
+    }
+    // Display list
+    printf("\nLinked List after insertion:\n");
+    displayList(head);
+    // Delete a node
+    printf("\nEnter value to delete: ");
+    scanf("%d", &del);
+    deleteNode(&head, del);
+    // Display final list
+    printf("\nLinked List after deletion:\n");
+    displayList(head);
+    return 0;
 }
