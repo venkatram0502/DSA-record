@@ -69,4 +69,34 @@ int evaluatePostfix(char *exp) {
             switch (c) {
                 case '+': push(&s, val1 + val2); break;
                 case '-': push(&s, val1 - val2); break;
-                case '*': push(&s, val1 * v
+                case '*': push(&s, val1 * val2); break;
+                case '/': 
+                    if (val2 != 0)
+                        push(&s, val1 / val2); 
+                    else {
+                        printf("Division by zero!\n");
+                        return -1;
+                    }
+                    break;
+                default: 
+                    printf("Invalid operator %c\n", c);
+                    return -1;
+            }
+        }
+    }
+    return pop(&s); // Result
+}
+
+// --- Main function ---
+int main() {
+    char postfix[MAX];
+
+    printf("Enter a postfix expression (single-digit numbers only): ");
+    scanf("%s", postfix);
+
+    int result = evaluatePostfix(postfix);
+    if (result != -1)
+        printf("Result: %d\n", result);
+
+    return 0;
+}
