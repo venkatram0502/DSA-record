@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX 100
+
+// Stack structure
+typedef struct {
+    int top;
+    int items[MAX];
+} Stack;
+
+// Initialize stack
+void init(Stack *s) {
+    s->top = -1;
+}
+
+// Check if stack is empty
+int isEmpty(Stack *s) {
+    return s->top == -1;
+}
+
+// Check if stack is full
+int isFull(Stack *s) {
+    return s->top == MAX - 1;
+}
+
+// Push element onto stack
+void push(Stack *s, int value) {
+    if (isFull(s)) {
+        printf("Stack overflow!\n");
+        return;
+    }
+    s->items[++s->top] = value;
+}
+
+// Pop element from stack
+int pop(Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack underflow!\n");
+        return -1;
+    }
+    return s->items[s->top--];
+}
+
+// Peek top element
+int peek(Stack *s) {
+    if (!isEmpty(s))
+        return s->items[s->top];
+    return -1;
+}
+
+// --- Application 1: Evaluate Postfix Expression ---
+int evaluatePostfix(char *exp) {
+    Stack s;
+    init(&s);
+    int i;
+
+    for (i = 0; exp[i]; i++) {
+        char c = exp[i];
+
+        if (isdigit(c)) {
+            push(&s, c - '0'); // Convert char to int
+        } else {
+            int val2 = pop(&s);
+            int val1 = pop(&s);
+
+            switch (c) {
+                case '+': push(&s, val1 + val2); break;
+                case '-': push(&s, val1 - val2); break;
+                case '*': push(&s, val1 * v
